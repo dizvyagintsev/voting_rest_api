@@ -2,6 +2,7 @@ import dataclasses
 from collections import defaultdict
 
 from django.db import models
+from drf_spectacular.utils import extend_schema
 from rest_framework import views
 from rest_framework.response import Response
 
@@ -18,6 +19,10 @@ class VoteStats:
 WEIGHTS = [1.0, 0.5, 0.25]
 
 
+@extend_schema(
+    request=VotingListViewRequestSerializer,
+    responses=VotingListViewResponseSerializer,
+)
 class VotingListView(views.APIView):
     def get(self, request, *args, **kwargs):
         serializer = VotingListViewRequestSerializer(data=request.query_params)
