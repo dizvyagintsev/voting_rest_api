@@ -31,9 +31,19 @@ jobs:
       - name: Run tests
         run: make test
 
-      - name: Deploy to Heroku
+      - name: Login to Heroku Container registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Build and push
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          git remote add heroku https://git.heroku.com/voting-rest-api.git
-          git push heroku main
+          make generate_requirements
+          heroku container:push -a voting-rest-api web
+
+      - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a voting-rest-api web

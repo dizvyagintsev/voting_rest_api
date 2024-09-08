@@ -1,6 +1,8 @@
+generate_requirements:
+	poetry export -f requirements.txt --output requirements.txt --without-hashes --without dev
+
 # Start the containers and apply migrations
-up:
-	poetry export -f requirements.txt --output requirements.txt --without-hashes
+up: generate_requirements
 	docker-compose up -d
 
 # Stop and remove containers
@@ -8,8 +10,7 @@ down:
 	docker-compose down
 
 # Rebuild the Docker containers
-build:
-	poetry export -f requirements.txt --output requirements.txt --without-hashes
+build: generate_requirements
 	docker-compose build
 
 # Run only the migrations without bringing up/down the containers
