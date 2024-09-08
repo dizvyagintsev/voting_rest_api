@@ -1,4 +1,4 @@
-from drf_spectacular.utils import OpenApiResponse, extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
@@ -9,7 +9,7 @@ from voting.serializers import RestaurantSerializer
 
 class RestaurantPagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 50
 
 
@@ -23,15 +23,25 @@ class RestaurantPagination(PageNumberPagination):
         ),
     },
     parameters=[
-        OpenApiParameter(name='page', description='Page number for pagination', required=False, type=int),
-        OpenApiParameter(name='page_size', description='Number of items per page', required=False, type=int),
+        OpenApiParameter(
+            name="page",
+            description="Page number for pagination",
+            required=False,
+            type=int,
+        ),
+        OpenApiParameter(
+            name="page_size",
+            description="Number of items per page",
+            required=False,
+            type=int,
+        ),
     ],
 )
 class RestaurantListCreateView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     pagination_class = RestaurantPagination
 
-    queryset = RestaurantRepository.all()
+    queryset = RestaurantRepository.all().order_by("created_at")
     serializer_class = RestaurantSerializer
 
     def perform_create(self, serializer):

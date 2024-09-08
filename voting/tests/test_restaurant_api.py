@@ -18,9 +18,9 @@ class RestaurantTests(APITestCase):
         url = reverse("restaurant-list-create")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
-        self.assertEqual(response.data[0]["name"], self.restaurant1.name)
-        self.assertEqual(response.data[1]["name"], self.restaurant2.name)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(response.data["results"][0]["name"], self.restaurant1.name)
+        self.assertEqual(response.data["results"][1]["name"], self.restaurant2.name)
 
     def test_retrieve_restaurant(self):
         """

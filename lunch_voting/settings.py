@@ -85,9 +85,7 @@ WSGI_APPLICATION = "lunch_voting.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": dj_database_url.config(conn_max_age=600)
-}
+DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 
 
 # Password validation
@@ -139,4 +137,3 @@ VOTE_WEIGHTS = (
 )
 # number of votes per user per day
 DAILY_VOTE_LIMIT = 5
-
