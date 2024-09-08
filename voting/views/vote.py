@@ -1,24 +1,30 @@
 from typing import Any
 
-from django.db import transaction
-from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from rest_framework import generics, status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from voting.models import Vote
+from voting.repositories.vote import VoteRepository
 from voting.serializers import VoteSerializer
+from voting.services.vote import VoteService
 
 DAILY_VOTE_LIMIT = 5
-WEIGHTS = [1.0, 0.5, 0.25]
+WEIGHTS = (1.0, 0.5, 0.25)
 
 
 @extend_schema(
     request=VoteSerializer,
-    responses={201: VoteSerializer},
+    responses={
+        201: VoteSerializer,
+        400: OpenApiResponse(description="Invalid input data or missing required fields."),
+        401: OpenApiResponse(description="Unauthorized: X-User-Id header is required."),
+        403: OpenApiResponse(description="Forbidden: Daily vote limit reached."),
+        404: OpenApiResponse(description="Not Found: Restaurant not found."),
+    },
     parameters=[
         OpenApiParameter(
             name='X-User-Id',
@@ -51,33 +57,22 @@ class VoteCreateView(generics.CreateAPIView):
                 )
 
             return Response(
-                input_serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Invalid input data or missing required fields.", "errors": input_serializer.errors},
             )
 
-        today = timezone.now().date()
+        vote = VoteService(
+            vote_repository=VoteRepository(),
+            user_vote_limit=DAILY_VOTE_LIMIT,
+        ).add_vote(
+            user_id=user_id,
+            restaurant_id=validated_data['restaurant'].id,
+        )
 
-        with transaction.atomic():
-            votes = Vote.objects.select_for_update().filter(
-                user_id=user_id,
-                created_at__date=today
+        if not vote:
+            return Response(
+                {"detail": "Daily vote limit reached."},
+                status=status.HTTP_403_FORBIDDEN,
             )
-
-            daily_vote_count = votes.count()
-
-            if daily_vote_count >= DAILY_VOTE_LIMIT:
-                message = f"Vote limit reached for today. You can only vote {DAILY_VOTE_LIMIT} times per day."
-                return Response(
-                    {"detail": message},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-
-            vote = Vote(
-                user_id=user_id,
-                restaurant=validated_data["restaurant"],
-            )
-
-            vote.save()
 
         serializer = VoteSerializer(vote)
 

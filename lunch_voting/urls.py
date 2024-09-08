@@ -32,7 +32,7 @@ urlpatterns = [
     path('api/v1/restaurants/', RestaurantListCreateView.as_view(), name='restaurant-list-create'),
     path('api/v1/restaurants/<int:pk>/', RestaurantDetailView.as_view(), name='restaurant-detail'),
 
-    path('api/v1/votes/', VoteCreateView.as_view(), name='vote-create'),
+    path('api/v1/vote/', VoteCreateView.as_view(), name='vote-create'),
 
     path('api/v1/votings/', VotingListView.as_view(), name='voting-list'),
 ]

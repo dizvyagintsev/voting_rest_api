@@ -15,7 +15,7 @@ class Vote(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['user_id', 'created_at']),
-            # models.Index(fields=['restaurant', 'created_at']),
+            models.Index(fields=["created_at", "restaurant_id", "user_id"]),
+            models.Index(fields=["created_at", "restaurant_id"]),
         ]
 
