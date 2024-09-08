@@ -4,22 +4,21 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voting', '0008_remove_vote_voting_vote_user_id_d468f5_idx_and_more'),
+        ("voting", "0008_remove_vote_voting_vote_user_id_d468f5_idx_and_more"),
     ]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='vote',
-            name='voting_vote_restaur_6509c0_idx',
+            model_name="vote",
+            name="voting_vote_restaur_6509c0_idx",
         ),
         migrations.RemoveIndex(
-            model_name='vote',
-            name='voting_vote_created_efba96_idx',
+            model_name="vote",
+            name="voting_vote_created_efba96_idx",
         ),
         migrations.RemoveIndex(
-            model_name='vote',
-            name='voting_vote_created_f40b96_idx',
+            model_name="vote",
+            name="voting_vote_created_f40b96_idx",
         ),
     ]

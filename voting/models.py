@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -9,7 +10,7 @@ class Restaurant(models.Model):
 
 
 class Vote(models.Model):
-    user_id = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -18,4 +19,3 @@ class Vote(models.Model):
             models.Index(fields=["created_at", "restaurant_id", "user_id"]),
             models.Index(fields=["created_at", "restaurant_id"]),
         ]
-

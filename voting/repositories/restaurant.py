@@ -1,4 +1,4 @@
-from typing import Iterator, Iterable
+from typing import Iterable, Iterator
 
 from django.db.models import QuerySet
 

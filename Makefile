@@ -20,3 +20,16 @@ migrate:
 # Access the shell inside the web container
 bash:
 	docker-compose exec web bash
+
+# Run pytest
+test:
+	pytest
+
+# Run linter
+lint:
+	ruff check
+
+# Run formatter
+format:
+	ruff check --select I --fix
+	ruff format

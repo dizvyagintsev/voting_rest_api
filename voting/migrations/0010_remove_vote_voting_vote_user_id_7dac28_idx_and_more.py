@@ -4,26 +4,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('voting', '0009_remove_vote_voting_vote_restaur_6509c0_idx_and_more'),
+        ("voting", "0009_remove_vote_voting_vote_restaur_6509c0_idx_and_more"),
     ]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='vote',
-            name='voting_vote_user_id_7dac28_idx',
+            model_name="vote",
+            name="voting_vote_user_id_7dac28_idx",
         ),
         migrations.RemoveIndex(
-            model_name='vote',
-            name='voting_vote_restaur_22b5fd_idx',
+            model_name="vote",
+            name="voting_vote_restaur_22b5fd_idx",
         ),
         migrations.AddIndex(
-            model_name='vote',
-            index=models.Index(fields=['created_at', 'restaurant_id', 'user_id'], name='voting_vote_created_4b1f74_idx'),
+            model_name="vote",
+            index=models.Index(
+                fields=["created_at", "restaurant_id", "user_id"],
+                name="voting_vote_created_4b1f74_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='vote',
-            index=models.Index(fields=['created_at', 'restaurant_id'], name='voting_vote_created_7f553e_idx'),
+            model_name="vote",
+            index=models.Index(
+                fields=["created_at", "restaurant_id"],
+                name="voting_vote_created_7f553e_idx",
+            ),
         ),
     ]
