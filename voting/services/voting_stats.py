@@ -1,7 +1,6 @@
 import dataclasses
-import datetime
 from collections import defaultdict
-from typing import Iterator, Any
+from typing import Iterator
 
 from voting.models import Restaurant
 from voting.repositories.restaurant import RestaurantRepository

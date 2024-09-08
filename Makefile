@@ -21,15 +21,23 @@ migrate:
 bash:
 	docker-compose exec web bash
 
+# Install dependencies
+install:
+	poetry install
+
 # Run pytest
 test:
-	pytest
+	poetry run pytest -v
 
 # Run linter
 lint:
-	ruff check
+	poetry run ruff check
 
 # Run formatter
 format:
-	ruff check --select I --fix
-	ruff format
+	poetry run ruff check --select I --fix
+	poetry run ruff format
+
+# Run mypy
+mypy:
+	poetry run mypy .
