@@ -1,6 +1,7 @@
 import dataclasses
+import datetime
 from collections import defaultdict
-from typing import Iterator
+from typing import Iterator, Any
 
 from voting.models import Restaurant
 from voting.repositories.restaurant import RestaurantRepository
@@ -66,7 +67,9 @@ class VotingStatsService:
         :return: Voting statistics (distinct user count, weights sum) for each restaurant for each voting date and
                     set of voted restaurant ids
         """
-        votings_stats = defaultdict(lambda: defaultdict(RestaurantVotingStats))
+        votings_stats: dict[str, dict[int, RestaurantVotingStats]] = defaultdict(
+            lambda: defaultdict(RestaurantVotingStats)
+        )
 
         distinct_users_count_lookup = {
             (
@@ -108,9 +111,9 @@ class VotingStatsService:
         restaurants: dict[int, Restaurant],
         votings_stats: dict[str, dict[int, RestaurantVotingStats]],
     ) -> VotingListViewResponseSerializer:
-        response = {"votings": []}
+        response: dict[str, list[dict]] = {"votings": []}
         for voting_date, restaurant_voting_stats in votings_stats.items():
-            voting = {"date": voting_date}
+            voting: dict = {"date": voting_date}
 
             sorted_restaurants = sorted(
                 restaurant_voting_stats.items(),

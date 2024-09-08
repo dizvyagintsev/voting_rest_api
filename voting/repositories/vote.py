@@ -1,3 +1,4 @@
+import datetime
 from typing import Iterator
 
 from django.db import models, transaction
@@ -10,7 +11,7 @@ from voting.models import Vote
 class VoteRepository:
     @transaction.atomic
     def add_vote(
-        self, user_id: str, restaurant_id: int, user_vote_limit: int
+        self, user_id: int, restaurant_id: int, user_vote_limit: int
     ) -> Vote | None:
         """
         Add record to the vote table and return the vote object if the user has not reached the limit of votes.
@@ -37,7 +38,7 @@ class VoteRepository:
 
     @staticmethod
     def query_votes_by_date(
-        start_date: timezone.datetime, end_date: timezone.datetime
+        start_date: datetime.date, end_date: datetime.date
     ) -> QuerySet[Vote]:
         """
         Query votes by date.

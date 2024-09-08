@@ -19,7 +19,7 @@ class VoteService:
         self.vote_repository = vote_repository
         self.user_vote_limit = user_vote_limit
 
-    def add_vote(self, user_id: str, restaurant_id: int) -> Vote | None:
+    def add_vote(self, user_id: int, restaurant_id: int) -> Vote | None:
         """
         Add a vote to the restaurant. If the user has reached the limit of votes, it will return None.
 
