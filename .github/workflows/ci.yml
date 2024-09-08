@@ -10,18 +10,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install poetry
         run: pipx install poetry
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'poetry'
+
       - name: Install dependencies
         run: make install
+
       - name: Run static analysis
         run: | 
           make lint
           make format
           make mypy
+
       - name: Run tests
         run: make test
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          git remote add heroku https://git.heroku.com/voting-rest-api.git
+          git push heroku main
