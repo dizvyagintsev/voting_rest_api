@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install poetry
-        run: pipx install poetry
+        run: | 
+          pipx install poetry
+          poetry config warnings.export false
 
       - uses: actions/setup-python@v5
         with:
@@ -34,7 +36,8 @@ jobs:
       - name: Login to Heroku Container registry
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
+        run: |
+          echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
 
       - name: Build and push
         env:
