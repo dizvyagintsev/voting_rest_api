@@ -71,20 +71,20 @@
    make down
    ```
 
-### Running Tests
+## Running Tests
 
 Run tests with the following command:
 ```bash
 make test
 ```
 
-### Technologies Used
+## Technologies Used
 
 1. **Django** – While I usually prefer FastAPI for REST APIs, Django was specified in the assignment, so I chose it for this project. I opted not to use async views because Django's ORM doesn't fully support async operations yet.
 2. **PostgreSQL** – I picked PostgreSQL because it handles relationships well and works great with a fixed schema.
 3. **GitHub Actions** – I used GitHub Actions for running tests and deploying to Heroku.
 
-### Possible Improvements
+## Possible Improvements
 
 While the current implementation meets the requirements of this test assignment , there are several areas where further enhancements could be made to improve the codebase. These enhancements have not been implemented due to time constraints but could be considered for future development:
 
