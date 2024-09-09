@@ -1,6 +1,8 @@
 # Voting REST API for Choosing Where to Go to Lunch
 
 [![Swagger UI](https://img.shields.io/badge/Swagger-API_Documentation-brightgreen)](https://voting-rest-api-57093fdeadee.herokuapp.com/api/schema/swagger-ui/#/)
+![GitHub Actions Status](https://github.com/dizvyagintsev/voting_rest_api/actions/workflows/ci.yml/badge.svg)
+
 
 ## How to Use the API
 
@@ -84,9 +86,8 @@ make test
 
 ### Possible Improvements
 
-While the current implementation meets the requirements, there are a few enhancements that could be considered for the future:
+While the current implementation meets the requirements of this test assignment , there are several areas where further enhancements could be made to improve the codebase. These enhancements have not been implemented due to time constraints but could be considered for future development:
 
 1. **Additional Tests**: Add tests for services and repositories, not just API tests.
-2. **Improved Validation**: Implement validation to prevent duplicate restaurant names.
 3. **Rate Limiting**: Add throttling to user registration and token acquisition to prevent brute force attacks.
 5. **Vote Calculation Service**: If the application experiences high load and performance degradation, a dedicated service for vote result calculations could be introduced. This service would process votes asynchronously, possibly using event streaming (e.g., Redis Streams or Kafka) to handle large-scale data more efficiently. For smaller-scale tasks, the current approach of handling vote calculations in Python with simple database aggregations should be sufficient.

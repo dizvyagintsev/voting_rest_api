@@ -19,8 +19,8 @@ class RestaurantTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 2)
-        self.assertEqual(response.data["results"][0]["name"], self.restaurant1.name)
-        self.assertEqual(response.data["results"][1]["name"], self.restaurant2.name)
+        self.assertEqual(response.data["results"][0]["name"], self.restaurant2.name)
+        self.assertEqual(response.data["results"][1]["name"], self.restaurant1.name)
 
     def test_retrieve_restaurant(self):
         """
@@ -49,6 +49,15 @@ class RestaurantTests(APITestCase):
         Ensure creating a restaurant with invalid data fails.
         """
         data = {"name": ""}
+        url = reverse("restaurant-list-create")
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_duplicate_restaurant(self):
+        """
+        Ensure creating a restaurant with a duplicate name fails.
+        """
+        data = {"name": "Pizza Palace"}
         url = reverse("restaurant-list-create")
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
