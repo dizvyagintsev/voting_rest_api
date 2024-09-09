@@ -1,13 +1,10 @@
-# Voting REST API for choosing where to go to lunch
-
----
+# Voting REST API for Choosing Where to Go to Lunch
 
 [![Swagger UI](https://img.shields.io/badge/Swagger-API_Documentation-brightgreen)](https://voting-rest-api-57093fdeadee.herokuapp.com/api/schema/swagger-ui/#/)
 
+## How to Use the API
 
-## How to use API
-
-1. Register user using `/api/v1/register` endpoint
+1. **Register a user** using the `/api/v1/register` endpoint:
     ```bash
     curl --location "https://voting-rest-api-57093fdeadee.herokuapp.com/api/v1/register/" \
     --header "accept: application/json" \
@@ -18,85 +15,78 @@
       \"email\": \"user@example.com\"
     }"
     ```
-    Access token will be returned in response body, it is required for voting.
+   The response will return an access token, which is required for voting.
 
-2. Create a restaurant using `/api/v1/restaurants/` endpoint
+2. **Create a restaurant** using the `/api/v1/restaurants/` endpoint:
     ```bash
     curl --location "https://voting-rest-api-57093fdeadee.herokuapp.com/api/v1/restaurants/" \
     --header "accept: application/json" \
     --header "Content-Type: application/json" \
-    --data "{
+    --data-raw "{
       \"name\": \"string\",
       \"description\": \"string\"
     }"
     ```
 
-3. Vote for a restaurant using `/api/v1/votes/` endpoint. Replace `<auth_token>` with the token received in step 1 and 
-`<restaurant_id>` with the id of the restaurant created in step 2.
+3. **Vote for a restaurant** using the `/api/v1/votes/` endpoint. Replace `<auth_token>` with the token received in step 1, and `<restaurant_id>` with the ID of the restaurant created in step 2:
     ```bash
     curl --location "https://voting-rest-api-57093fdeadee.herokuapp.com/api/v1/votes/" \
     --header "accept: application/json" \
     --header "Authorization: Bearer <auth_token>" \
     --header "Content-Type: application/json" \
-    --data "{
+    --data-raw "{
       \"restaurant\": <restaurant_id>
     }"
     ```
-   
-4. Get results of voting using `/api/v1/votes-history/` endpoint
-   ```bash
-   curl --location "https://voting-rest-api-57093fdeadee.herokuapp.com/api/v1/votes-history/?start_date=2024-09-01&end_date=2024-09-30" \
-   --header "accept: application/json"
-   ```
-   
-## How to run locally
+   **Voting Restrictions**: Users can vote only a limited number of times within a set period, depending on the system rules. If the voting limit is exceeded, a 403 error may be returned.
 
-Prerequisites:
+4. **Get voting results** using the `/api/v1/votes-history/` endpoint:
+    ```bash
+    curl --location "https://voting-rest-api-57093fdeadee.herokuapp.com/api/v1/votes-history/?start_date=2024-09-01&end_date=2024-09-30" \
+    --header "accept: application/json"
+    ```
+   
+   You can also explore and interact with the API through the Swagger UI, which is available [here](https://voting-rest-api-57093fdeadee.herokuapp.com/api/schema/swagger-ui/#/), without needing to manually execute these commands.
+
+## How to Run Locally
+
+### Prerequisites
+
 - Python 3.12
 - Docker
 - Poetry
 
-1. Rename `.env.example` file to `.env` and set secret key and database credentials.
+1. Rename `.env.example` to `.env` and configure the secret key and database credentials.
 
-2. Run the following command to start web server and PostgreSQL database in Docker containers:
+2. Start the web server and PostgreSQL database in Docker containers:
    ```bash
    make up
    ```
-   
-   Interact with the API using Swagger UI at http://localhost:8000/api/schema/swagger-ui/
+   You can interact with the API using Swagger UI at [http://localhost:8000/api/schema/swagger-ui/](http://localhost:8000/api/schema/swagger-ui/).
 
-3. To stop the containers run:
+3. To stop the containers, run:
    ```bash
    make down
    ```
-   
-### Tests
+
+### Running Tests
 
 Run tests with the following command:
 ```bash
 make test
 ```
 
-### Used technologies
-1. Django – I usually prefer FastAPI for REST APIs, but in assignment was mentioned Django, so I decided to use it.
-I didn't use async views because Django ORM doesn't fully support async yet.
-2. PostgreSQL – I used PostgreSQL because entities have relations and their schema is fixed.
-3. GitHub Actions – I used GitHub Actions for running tests and deploying to Heroku.
+### Technologies Used
 
-### Improvements
-While the current implementation meets the requirements of this test assignment , there are several areas where further
-enhancements could be made to improve the codebase. These enhancements have not been implemented due to time constraints 
-but could be considered for future development:
+1. **Django** – While I usually prefer FastAPI for REST APIs, Django was specified in the assignment, so I chose it for this project. I opted not to use async views because Django's ORM doesn't fully support async operations yet.
+2. **PostgreSQL** – I picked PostgreSQL because it handles relationships well and works great with a fixed schema.
+3. **GitHub Actions** – I used GitHub Actions for running tests and deploying to Heroku.
 
-1. Add more tests. Now only API tests are implemented, and it would be good to add tests for services and repositories.
-2. Add more validation for input data. For example, check if the restaurant with the same name already exists. 
-3. Add throttling on user registration and token acquisition to prevent brute force attacks.
-4. Introduce a separate service for vote result calculation: Currently, new votes are stored without any real-time 
-aggregation or modification, allowing for flexible result calculation at a later time. Simple aggregations are handled 
-by the database, while more complex calculations (e.g., vote weights) are done in Python. If daily vote volume grows 
-significantly, Python memory could become a bottleneck. A dedicated service that processes new votes streamingly would 
-handle result calculation independently and scale as needed.
+### Possible Improvements
 
+While the current implementation meets the requirements, there are a few enhancements that could be considered for the future:
 
-
-
+1. **Additional Tests**: Add tests for services and repositories, not just API tests.
+2. **Improved Validation**: Implement validation to prevent duplicate restaurant names.
+3. **Rate Limiting**: Add throttling to user registration and token acquisition to prevent brute force attacks.
+5. **Vote Calculation Service**: If the application experiences high load and performance degradation, a dedicated service for vote result calculations could be introduced. This service would process votes asynchronously, possibly using event streaming (e.g., Redis Streams or Kafka) to handle large-scale data more efficiently. For smaller-scale tasks, the current approach of handling vote calculations in Python with simple database aggregations should be sufficient.

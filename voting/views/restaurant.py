@@ -7,17 +7,17 @@ from drf_standardized_errors.openapi_serializers import (
     ErrorResponse404Serializer,
 )
 from rest_framework import generics, status
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import CursorPagination
 
 from voting.openapi_responses import BAD_REQUEST_RESPONSE_SCHEMA
 from voting.repositories.restaurant import RestaurantRepository
 from voting.serializers import RestaurantSerializer
 
 
-class RestaurantPagination(PageNumberPagination):
+class RestaurantPagination(CursorPagination):
     page_size = 10
     page_size_query_param = "page_size"
-    max_page_size = 50
+    ordering = "-created_at"
 
 
 @extend_schema_view(
