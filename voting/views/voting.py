@@ -1,10 +1,10 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework import views
-from rest_framework.permissions import AllowAny
+from rest_framework import generics
 from rest_framework.response import Response
 
 from lunch_voting.settings import VOTE_WEIGHTS
+from voting.openapi_responses import BAD_REQUEST_RESPONSE_SCHEMA
 from voting.repositories.restaurant import RestaurantRepository
 from voting.repositories.vote import VoteRepository
 from voting.serializers import (
@@ -16,6 +16,7 @@ from voting.services.voting_stats import VotingStatsService
 
 @extend_schema(
     tags=["vote"],
+    summary="Get history of votings",
     parameters=[
         OpenApiParameter(
             name="start_date",
@@ -30,14 +31,13 @@ from voting.services.voting_stats import VotingStatsService
             type=OpenApiTypes.DATE,
         ),
     ],
-    description="Get voting list for the given date range.",
     responses={
         200: VotingListViewResponseSerializer,
-        400: "Invalid input data or missing required fields.",
+        400: BAD_REQUEST_RESPONSE_SCHEMA,
     },
 )
-class VotingListView(views.APIView):
-    permission_classes = [AllowAny]
+class VotingListView(generics.GenericAPIView):
+    authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         serializer = VotingListViewRequestSerializer(data=request.query_params)

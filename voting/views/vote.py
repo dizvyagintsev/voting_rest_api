@@ -1,13 +1,19 @@
 from typing import Any
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_standardized_errors.openapi_serializers import (
+    ErrorResponse401Serializer,
+    ErrorResponse403Serializer,
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from lunch_voting.settings import DAILY_VOTE_LIMIT
 from voting.models import Vote
+from voting.openapi_responses import BAD_REQUEST_RESPONSE_SCHEMA
 from voting.repositories.vote import VoteRepository
 from voting.serializers import VoteSerializer
 from voting.services.vote import VoteService
@@ -15,19 +21,18 @@ from voting.services.vote import VoteService
 
 @extend_schema(
     tags=["vote"],
-    request=VoteSerializer,
-    description="Vote for a restaurant.",
+    summary="Vote for a restaurant",
     responses={
-        201: VoteSerializer,
-        400: OpenApiResponse(
-            description="Invalid input data or missing required fields."
+        status.HTTP_201_CREATED: VoteSerializer,
+        status.HTTP_400_BAD_REQUEST: BAD_REQUEST_RESPONSE_SCHEMA,
+        status.HTTP_401_UNAUTHORIZED: ErrorResponse401Serializer,
+        status.HTTP_403_FORBIDDEN: OpenApiResponse(
+            ErrorResponse403Serializer, description="Daily vote limit reached."
         ),
-        401: OpenApiResponse(description="Unauthorized."),
-        403: OpenApiResponse(description="Forbidden: Daily vote limit reached."),
-        404: OpenApiResponse(description="Not Found: Restaurant not found."),
     },
 )
 class VoteCreateView(generics.CreateAPIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
@@ -36,25 +41,8 @@ class VoteCreateView(generics.CreateAPIView):
         user_id = request.user.id
 
         input_serializer = self.get_serializer(data=request.data)
-        is_valid = input_serializer.is_valid(raise_exception=False)
+        input_serializer.is_valid(raise_exception=True)
         validated_data = input_serializer.validated_data
-
-        if not is_valid:
-            if (
-                "restaurant" in request.data
-                and "restaurant" not in input_serializer.validated_data
-            ):
-                return Response(
-                    {"detail": "Restaurant not found."},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-
-            return Response(
-                {
-                    "detail": "Invalid input data or missing required fields.",
-                    "errors": input_serializer.errors,
-                },
-            )
 
         vote = VoteService(
             vote_repository=VoteRepository(),
@@ -65,10 +53,20 @@ class VoteCreateView(generics.CreateAPIView):
         )
 
         if not vote:
-            return Response(
-                {"detail": "Daily vote limit reached."},
-                status=status.HTTP_403_FORBIDDEN,
+            serializer = ErrorResponse403Serializer(
+                {
+                    "type": "client_error",
+                    "errors": [
+                        {
+                            "code": "permission_denied",
+                            "detail": "Daily vote limit reached.",
+                            "attr": None,
+                        }
+                    ],
+                }
             )
+
+            return Response(serializer.data, status=status.HTTP_403_FORBIDDEN)
 
         serializer = VoteSerializer(vote)
 

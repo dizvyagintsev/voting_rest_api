@@ -15,6 +15,7 @@ drf-spectacular = "^0.27.2"
 djangorestframework-simplejwt = "^5.3.1"
 dj-database-url = "^2.2.0"
 gunicorn = "^23.0.0"
+drf-standardized-errors = {extras = ["openapi"], version = "^0.14.1"}
 
 
 [tool.poetry.group.dev.dependencies]
