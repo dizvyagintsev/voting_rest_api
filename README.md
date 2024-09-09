@@ -34,7 +34,7 @@
     ```bash
     curl --location "https://voting-rest-api-57093fdeadee.herokuapp.com/api/v1/votes/" \
     --header "accept: application/json" \
-    --header "Authorization: Bearer <auth_token>" \
+    --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI1ODcyOTE2LCJpYXQiOjE3MjU4NzI2MTYsImp0aSI6IjRlMDM5OTUxYmRhNDQ2ZGRhNzAzMzI4YzEwY2MzM2FiIiwidXNlcl9pZCI6OH0.309BneOybjxCvL_8mN44c7obb4R2OkseDUeA9k2CdWk" \
     --header "Content-Type: application/json" \
     --data-raw "{
       \"restaurant\": <restaurant_id>
