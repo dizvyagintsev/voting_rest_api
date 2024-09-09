@@ -53,7 +53,7 @@ class VoteCreateView(generics.CreateAPIView):
         )
 
         if not vote:
-            serializer = ErrorResponse403Serializer(
+            error_serializer = ErrorResponse403Serializer(
                 {
                     "type": "client_error",
                     "errors": [
@@ -66,7 +66,7 @@ class VoteCreateView(generics.CreateAPIView):
                 }
             )
 
-            return Response(serializer.data, status=status.HTTP_403_FORBIDDEN)
+            return Response(error_serializer.data, status=status.HTTP_403_FORBIDDEN)
 
         serializer = VoteSerializer(vote)
 

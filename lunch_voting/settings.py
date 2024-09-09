@@ -53,7 +53,7 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
 }
 
-DRF_STANDARDIZED_ERRORS = {
+DRF_STANDARDIZED_ERRORS: dict[str, list[int]] = {
     "ALLOWED_ERROR_STATUS_CODES": [],
 }
 
